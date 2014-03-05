@@ -11,7 +11,7 @@ fig_height = 6
 
 library(ggplot2) #use install.packages("ggplot2") if gglot2 not installed
 
-selfie.rates.age.groups = read.csv("data/selfie_rates_age_groups.csv", header = TRUE, stringsAsFactors = FALSE)
+selfie.rates.age.groups = read.csv("./data/selfie_rates_age_groups.csv", header = TRUE, stringsAsFactors = FALSE)
 
 selfie.rates.age.groups$Age.Group = factor(selfie.rates.age.groups$Age.Group, c("Under 13", "13-17", "18-24", "25-32", "Over 32"))
 selfie.rates.age.groups$Gender = factor(selfie.rates.age.groups$Gender)
