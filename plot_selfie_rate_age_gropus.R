@@ -18,7 +18,7 @@ selfie.rates.age.groups$Gender = factor(selfie.rates.age.groups$Gender)
 
 
 
-ggplot(selfie.rates.age.groups, aes(x = rate, y = City)) + 
+ggplot(selfie.rates.age.groups, aes(x = 100*rate, y = City)) + 
   geom_segment(aes(yend=City), xend = 0, colour = "grey50") + 
   geom_point(size = rel(size_of_point_markers), aes(colour = Gender)) +  
   theme_bw() + 
