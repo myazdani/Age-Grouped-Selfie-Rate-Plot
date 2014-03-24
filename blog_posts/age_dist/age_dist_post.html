@@ -70,24 +70,7 @@
 
 <p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
 
-<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">size_of_point_markers</span> <span class="hl kwb">=</span> <span class="hl num">3</span>
-<span class="hl std">size_of_city_names</span> <span class="hl kwb">=</span> <span class="hl num">1</span>
-<span class="hl std">size_of_percentage_labels</span> <span class="hl kwb">=</span> <span class="hl num">1</span>
-<span class="hl std">size_of_legend_text</span> <span class="hl kwb">=</span> <span class="hl num">1</span>
 
-<span class="hl std">fig_width</span> <span class="hl kwb">=</span> <span class="hl num">7</span>
-<span class="hl std">fig_height</span> <span class="hl kwb">=</span> <span class="hl num">6</span>
-
-<span class="hl kwd">library</span><span class="hl std">(ggplot2)</span>  <span class="hl com">#use install.packages('ggplot2') if gglot2 not installed</span>
-
-<span class="hl std">selfie.rates.age.groups</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;../../data/selfie_rates_age_groups.csv&quot;</span><span class="hl std">,</span>
-    <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">stringsAsFactors</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
-
-<span class="hl std">selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Age.Group</span> <span class="hl kwb">=</span> <span class="hl kwd">factor</span><span class="hl std">(selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Age.Group,</span>
-    <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;Under 13&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;13-17&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;18-24&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;25-32&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Over 32&quot;</span><span class="hl std">))</span>
-<span class="hl std">selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Gender</span> <span class="hl kwb">=</span> <span class="hl kwd">factor</span><span class="hl std">(selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Gender)</span>
-</pre></div>
-</div></div>
 
 
 <p>You can also embed plots, for example:</p>
