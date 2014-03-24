@@ -1,0 +1,107 @@
+<html>
+
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+<title>Age and Gender Distributions</title>
+</head>
+
+<body>
+
+<p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">size_of_point_markers</span> <span class="hl kwb">=</span> <span class="hl num">3</span>
+<span class="hl std">size_of_city_names</span> <span class="hl kwb">=</span> <span class="hl num">1</span>
+<span class="hl std">size_of_percentage_labels</span> <span class="hl kwb">=</span> <span class="hl num">1</span>
+<span class="hl std">size_of_legend_text</span> <span class="hl kwb">=</span> <span class="hl num">1</span>
+
+<span class="hl std">fig_width</span> <span class="hl kwb">=</span> <span class="hl num">7</span>
+<span class="hl std">fig_height</span> <span class="hl kwb">=</span> <span class="hl num">6</span>
+
+<span class="hl kwd">library</span><span class="hl std">(ggplot2)</span>  <span class="hl com">#use install.packages('ggplot2') if gglot2 not installed</span>
+
+<span class="hl std">selfie.rates.age.groups</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;../../data/selfie_rates_age_groups.csv&quot;</span><span class="hl std">,</span>
+    <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">stringsAsFactors</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+
+<span class="hl std">selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Age.Group</span> <span class="hl kwb">=</span> <span class="hl kwd">factor</span><span class="hl std">(selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Age.Group,</span>
+    <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;Under 13&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;13-17&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;18-24&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;25-32&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Over 32&quot;</span><span class="hl std">))</span>
+<span class="hl std">selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Gender</span> <span class="hl kwb">=</span> <span class="hl kwd">factor</span><span class="hl std">(selfie.rates.age.groups</span><span class="hl opt">$</span><span class="hl std">Gender)</span>
+</pre></div>
+</div></div>
+
+
+<p>You can also embed plots, for example:</p>
+
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">ggplot</span><span class="hl std">(selfie.rates.age.groups,</span> <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">x</span> <span class="hl std">=</span> <span class="hl num">100</span> <span class="hl opt">*</span> <span class="hl std">rate,</span> <span class="hl kwc">y</span> <span class="hl std">= City))</span> <span class="hl opt">+</span> <span class="hl kwd">geom_segment</span><span class="hl std">(</span><span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">yend</span> <span class="hl std">= City),</span>
+    <span class="hl kwc">xend</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">colour</span> <span class="hl std">=</span> <span class="hl str">&quot;grey50&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl kwd">geom_point</span><span class="hl std">(</span><span class="hl kwc">size</span> <span class="hl std">=</span> <span class="hl kwd">rel</span><span class="hl std">(size_of_point_markers),</span>
+    <span class="hl kwd">aes</span><span class="hl std">(</span><span class="hl kwc">colour</span> <span class="hl std">= Gender))</span> <span class="hl opt">+</span> <span class="hl kwd">theme_bw</span><span class="hl std">()</span> <span class="hl opt">+</span> <span class="hl kwd">theme</span><span class="hl std">(</span><span class="hl kwc">panel.grid.major.y</span> <span class="hl std">=</span> <span class="hl kwd">element_blank</span><span class="hl std">(),</span>
+    <span class="hl kwc">axis.text.x</span> <span class="hl std">=</span> <span class="hl kwd">element_text</span><span class="hl std">(</span><span class="hl kwc">size</span> <span class="hl std">=</span> <span class="hl kwd">rel</span><span class="hl std">(size_of_percentage_labels)),</span> <span class="hl kwc">axis.text.y</span> <span class="hl std">=</span> <span class="hl kwd">element_text</span><span class="hl std">(</span><span class="hl kwc">size</span> <span class="hl std">=</span> <span class="hl kwd">rel</span><span class="hl std">(size_of_city_names)),</span>
+    <span class="hl kwc">legend.text</span> <span class="hl std">=</span> <span class="hl kwd">element_text</span><span class="hl std">(</span><span class="hl kwc">size</span> <span class="hl std">=</span> <span class="hl kwd">rel</span><span class="hl std">(size_of_legend_text)),</span> <span class="hl kwc">legend.key</span> <span class="hl std">=</span> <span class="hl kwd">element_blank</span><span class="hl std">(),</span>
+    <span class="hl kwc">legend.title</span> <span class="hl std">=</span> <span class="hl kwd">element_blank</span><span class="hl std">())</span> <span class="hl opt">+</span> <span class="hl kwd">facet_grid</span><span class="hl std">(Age.Group</span> <span class="hl opt">~</span> <span class="hl std">.,</span> <span class="hl kwc">scales</span> <span class="hl std">=</span> <span class="hl str">&quot;free_y&quot;</span><span class="hl std">,</span>
+    <span class="hl kwc">space</span> <span class="hl std">=</span> <span class="hl str">&quot;free_y&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl kwd">ylab</span><span class="hl std">(</span><span class="hl str">&quot;&quot;</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl kwd">xlab</span><span class="hl std">(</span><span class="hl str">&quot;Percentage&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" class="plot" /></div></div>
+
+
+</body>
+</html>

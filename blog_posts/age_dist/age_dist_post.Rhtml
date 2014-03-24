@@ -1,6 +1,14 @@
-#displayes selfie_rates_age_groups.csv as dotplot
-#selfie_rates_age_groups.csv shows the selfie rate for different age groups, cities, and genders
+<html>
 
+<head>
+<title>Age and Gender Distributions</title>
+</head>
+
+<body>
+
+<p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+
+<!--begin.rcode
 size_of_point_markers = 3
 size_of_city_names = 1 
 size_of_percentage_labels = 1
@@ -11,10 +19,16 @@ fig_height = 6
 
 library(ggplot2) #use install.packages("ggplot2") if gglot2 not installed
 
-selfie.rates.age.groups = read.csv("./data/selfie_rates_age_groups.csv", header = TRUE, stringsAsFactors = FALSE)
+selfie.rates.age.groups = read.csv("../../data/selfie_rates_age_groups.csv", header = TRUE, stringsAsFactors = FALSE)
 
 selfie.rates.age.groups$Age.Group = factor(selfie.rates.age.groups$Age.Group, c("Under 13", "13-17", "18-24", "25-32", "Over 32"))
 selfie.rates.age.groups$Gender = factor(selfie.rates.age.groups$Gender)
+end.rcode-->
+
+<p>You can also embed plots, for example:</p>
+
+<!--begin.rcode fig.width=7, fig.height=6
+
 
 
 
@@ -31,5 +45,7 @@ ggplot(selfie.rates.age.groups, aes(x = 100*rate, y = City)) +
   facet_grid(Age.Group ~ ., scales = "free_y", space = "free_y") +
   ylab("") +
   xlab("Percentage") 
+end.rcode-->
 
-#ggsave(file="age_dist.pdf", width=fig_width, height=fig_height)
+</body>
+</html>
