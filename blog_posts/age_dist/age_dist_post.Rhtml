@@ -79,6 +79,7 @@ selfie.odds = by(selfie.age.group.all, selfie.age.group.all$city, calculate.fema
 selfie.odds = as.data.frame.table(selfie.odds, responseName="Odds")
 colnames(selfie.odds)[1] = "city"
 
+selfie.odds$gender = "Female"
 
 selfie.odds.group[which(selfie.odds.group$Odds > 0), "gender"] = "Female"
 selfie.odds.group[which(selfie.odds.group$Odds < 0), "gender"] = "Male"
@@ -92,7 +93,8 @@ end.rcode-->
 library(ggplot2)
 size_of_point_markers = 9
 size_of_city_names = 2 
-size_of_percentage_labels = 1.5
+size_of_percentage_labels = 2
+size_of_percentage_digits = 1.5
 size_of_legend_text = 1.5
 
 fig_width = 7
@@ -100,11 +102,15 @@ fig_height = 6
 
 ggplot(selfie.odds, aes(x = Odds, y = city)) + 
   geom_segment(aes(yend=city), xend = 0, colour = "grey50") + 
-  geom_point(size = rel(size_of_point_markers)) +  
+  geom_point(size = rel(size_of_point_markers), aes(colour = gender)) +  
   theme_bw() + 
   theme(panel.grid.major.y = element_blank(), 
         axis.text.x = element_text(size = rel(size_of_percentage_labels)), 
-        axis.text.y = element_text(size = rel(size_of_city_names))) +
+        axis.title.x = element_text(size = rel(size_of_percentage_digits)),
+        axis.text.y = element_text(size = rel(size_of_city_names)),
+        legend.text = element_text(size = rel(size_of_legend_text)),
+        legend.key = element_blank(),
+        legend.title = element_blank()) +
   ylab("") +
   xlab("Log Odds") 
 end.rcode-->
@@ -163,7 +169,9 @@ ggplot(selfie.odds.group, aes(x = Odds, y = city)) +
   theme_bw() + 
   theme(panel.grid.major.y = element_blank(), 
         axis.text.x = element_text(size = rel(size_of_percentage_labels)), 
+        axis.title.x = element_text(size = rel(size_of_percentage_digits)),
         axis.text.y = element_text(size = rel(size_of_city_names)),
+        strip.text.x = element_text(size = rel(size_of_city_names)),
         legend.text = element_text(size = rel(size_of_legend_text)),
         legend.key = element_blank(),
         legend.title = element_blank(),
