@@ -6,35 +6,169 @@
 
 <body>
 
-<p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<!--begin.rcode, echo=FALSE, cache = TRUE
+setwd("/Users/myazdaniUCSD/Documents/selfies/Age-Grouped-Selfie-Rate-Plot/blog_posts/age_dist")
 
-<!--begin.rcode, echo=FALSE
-size_of_point_markers = 3
-size_of_city_names = 1 
-size_of_percentage_labels = 1
-size_of_legend_text = 1
+library(data.table)
+
+selfies.raw.tags = read.csv("../../data/tags.csv", header = TRUE, stringsAsFactors = FALSE)
+
+ids = unique(selfies.raw.tags$id)
+
+selfies.raw.tags.DT = data.table(selfies.raw.tags)
+setkey(selfies.raw.tags.DT, id)
+median.age = sapply(ids, FUN = function(x) median(selfies.raw.tags.DT[x]$age))
+mean.age = sapply(ids, FUN = function(x) mean(selfies.raw.tags.DT[x]$age))
+sd.age = sapply(ids, FUN = function(x) sd(selfies.raw.tags.DT[x]$age))
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+gender.agreement.level = function(x) {
+  ux <- unique(x)
+  length(which(x == ux[which.max(tabulate(match(x, ux)))] ))/ length(x) 
+}
+
+mode.gender = sapply(ids, FUN = function(x) Mode(selfies.raw.tags.DT[x]$gender))
+gender.conf = sapply(ids, FUN = function(x) gender.agreement.level(selfies.raw.tags.DT[x]$gender))
+
+cities = sapply(ids, FUN = function(x) selfies.raw.tags.DT[x]$city[1])
+selfies.tags = data.frame(id = ids, median.age = median.age, mean.age = mean.age, sd.age= sd.age, mode.gender = mode.gender, gender.conf = gender.conf, city = cities)
+levels(selfies.tags$city) = c("Bangkok", "Berlin", "Moscow", "New York", "Sao Paulo", "Tokyo")
+levels(selfies.tags$mode.gender) = c("Female", "Male")
+
+num.selfies.per.city = data.frame(city = names(summary(as.factor(selfies.tags$city))), total.selfies = summary(as.factor(selfies.tags$city)))
+
+selfies.tags$age_group = cut(selfies.tags$median.age, c(0, 17, 21, 25, 29, max(selfies.tags$median.age)))
+selfie.age.group.rate = aggregate(selfies.tags$median.age, selfies.tags[c("mode.gender", "city", "age_group")], length)
+names(selfie.age.group.rate)[ncol(selfie.age.group.rate)] = "num.selfies"
+selfie.age.group.rate = merge(selfie.age.group.rate, num.selfies.per.city, by = "city")
+selfie.age.group.rate$rate = selfie.age.group.rate$num.selfies/selfie.age.group.rate$total.selfies
+
+selfie.age.group.rate$age_group = factor(selfie.age.group.rate$age_group)
+selfie.age.group.rate$mode.gender = factor(selfie.age.group.rate$mode.gender)
+
+#levels(selfie.age.group.rate$age_group) = c("Under 18", "18 - 24", "24-32", "Over 32")
+
+selfie.age.group.all = aggregate(selfies.tags$median.age, selfies.tags[c("mode.gender", "city")], length)
+names(selfie.age.group.all)[ncol(selfie.age.group.all)] = "num.selfies"
+selfie.age.group.all = merge(selfie.age.group.all, num.selfies.per.city, by = "city")
+selfie.age.group.all$rate = selfie.age.group.all$num.selfies/selfie.age.group.all$total.selfies
+
+selfie.age.group.all$mode.gender = factor(selfie.age.group.all$mode.gender)
+
+
+calculate.female.odds.age.group = function(x) {
+  num.females =  x[which(x$mode.gender == "Female"), "num.selfies"]
+  num.males = x[which(x$mode.gender == "Male"), "num.selfies"]
+  total.number = num.females + num.males
+  p = num.females/total.number
+  return(log(p / (1 - p)))
+}
+
+selfie.odds.group = by(selfie.age.group.rate, selfie.age.group.rate[c("city", "age_group")], calculate.female.odds.age.group)
+selfie.odds.group = as.data.frame.table(selfie.odds.group, responseName="Odds")
+colnames(selfie.odds.group)[1] = "city"
+
+calculate.female.odds = function(x) {
+  p = x[which(x$mode.gender == "Female"), "rate"] 
+  return(log(p / (1 - p)))
+}
+selfie.odds = by(selfie.age.group.all, selfie.age.group.all$city, calculate.female.odds)
+selfie.odds = as.data.frame.table(selfie.odds, responseName="Odds")
+colnames(selfie.odds)[1] = "city"
+
+
+selfie.odds.group[which(selfie.odds.group$Odds > 0), "gender"] = "Female"
+selfie.odds.group[which(selfie.odds.group$Odds < 0), "gender"] = "Male"
+end.rcode-->
+
+<p>In <a href="http://selfiecity.net">selfiecity</a> and a previous <a href = "http://lab.softwarestudies.com/2014/02/gender-age-and-ambiguity-of-selfies-on.html">post</a>, we showed that Moscow has a dramatic number of female selfies. To be more precise, you are 4 times less likely to find a male selfie from Moscow than any of the other five cities that we looked at. In this post we are going to ask if this trend holds for different age groups.</p>
+
+<p>First, let's look again at the distribution of selifes partition by gender for the different cities:</p>
+
+<!--begin.rcode fig.width=8.7, fig.height=5, echo= FALSE
+library(ggplot2)
+size_of_point_markers = 9
+size_of_city_names = 2 
+size_of_percentage_labels = 1.5
+size_of_legend_text = 1.5
 
 fig_width = 7
 fig_height = 6
 
-library(ggplot2) #use install.packages("ggplot2") if gglot2 not installed
-
-selfie.rates.age.groups = read.csv("../../data/selfie_rates_age_groups.csv", header = TRUE, stringsAsFactors = FALSE)
-
-selfie.rates.age.groups$Age.Group = factor(selfie.rates.age.groups$Age.Group, c("Under 13", "13-17", "18-24", "25-32", "Over 32"))
-selfie.rates.age.groups$Gender = factor(selfie.rates.age.groups$Gender)
+ggplot(selfie.odds, aes(x = Odds, y = city)) + 
+  geom_segment(aes(yend=city), xend = 0, colour = "grey50") + 
+  geom_point(size = rel(size_of_point_markers)) +  
+  theme_bw() + 
+  theme(panel.grid.major.y = element_blank(), 
+        axis.text.x = element_text(size = rel(size_of_percentage_labels)), 
+        axis.text.y = element_text(size = rel(size_of_city_names))) +
+  ylab("") +
+  xlab("Log Odds") 
 end.rcode-->
+
+<p>The plot shows  the number of selfie photos by city, gender and age
+group. A few things stand our in the plot (do you see other
+interesting patterns). Right away, we can see more patterns which were
+hidden when we only compared number of selfies for cities and genders,
+without separating into age groups.</p>
+
+<p>In the upper part, we plot numbers of female and male selfies for
+youngest Instagram users (< 17). We see a strong differences between
+our cities located in Asia (Bangkok and Tokyo) and outside (New York,
+Moscow, Berlin). in the first two cities, there are many more selfies
+of young females, while in Western cities the numbers of male and
+females are almost the same. And the numbers of female selfies in
+Bangkok and Tokyo are also disproportionally large in comparison to
+all other groups in this age category.</p>
+
+<p>What happens when we consider the next age group - 17 to 24? Tokyo and
+Bangkok retain their strong positions, with significantly more female
+selfies in these two cities than the cities in the west. But now,
+Moscow shoots out way ahead - there are XX % female selfies from
+Moscow in this age group vs. XX % from Tokyo and XX % from Bangkok.
+And now the unusual pattern which we included in our findings
+presented in selfiecity.net is even more visible - there are XX as
+many female selfies in Moscow than male selfies. Thats a huge
+difference!</p>
+
+<p>In the next age group (24-32), Moscow is still leading, and it still
+has the largest difference in numbers betwen female and male selfies.
+The other city which also has a significant difference in this respect
+is NYC, but its not as strong as in Moscow.</p>
+
+Finally, lets look at the last group (32-65). Here we see that the
+pattern which was present in all other age groups - more female
+selfies than male selfies for every city - is reversed. In our oldest
+group, in every city now there are more males than females. But Moscow
+is again an exeption - here we stlll find more female selfies than
+male selfies. Either Moscow males are too busy working to post
+selfies, or Moscow female just like to take their pictures at all ages
+- either way, its data again looks different than data from other
+cities.
+
+Now, you may remember from the results we reported in selfiecity that
+most selfies in our dataset are from 23-25 age category. Since in the
+graph above this category was broken into two, lets not break data
+differently, so we can have 23-25 olds in one group.
+
+[plot]
+
+
+
+
 
 <p>You can also embed plots, for example:</p>
 
-<!--begin.rcode fig.width=7, fig.height=6
 
 
 
-
-ggplot(selfie.rates.age.groups, aes(x = 100*rate, y = City)) + 
-  geom_segment(aes(yend=City), xend = 0, colour = "grey50") + 
-  geom_point(size = rel(size_of_point_markers), aes(colour = Gender)) +  
+<!--begin.rcode fig.width=12, fig.height=16, echo= FALSE
+ggplot(selfie.odds.group, aes(x = Odds, y = city)) + 
+  geom_segment(aes(yend=city), xend = 0, colour = "grey50") + 
+  geom_point(size = rel(size_of_point_markers), aes(colour = gender)) +   
   theme_bw() + 
   theme(panel.grid.major.y = element_blank(), 
         axis.text.x = element_text(size = rel(size_of_percentage_labels)), 
@@ -42,9 +176,10 @@ ggplot(selfie.rates.age.groups, aes(x = 100*rate, y = City)) +
         legend.text = element_text(size = rel(size_of_legend_text)),
         legend.key = element_blank(),
         legend.title = element_blank()) +
-  facet_grid(Age.Group ~ ., scales = "free_y", space = "free_y") +
   ylab("") +
-  xlab("Percentage") 
+  #facet_grid(age_group ~ ., scales = "free_y", space = "free_y", ncol = 2) +
+  facet_wrap(~age_group, ncol = 2, scales = "free_y") + 
+  xlab("Log Odds") 
 end.rcode-->
 
 </body>
