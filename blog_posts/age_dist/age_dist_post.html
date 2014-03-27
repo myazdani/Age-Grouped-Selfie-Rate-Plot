@@ -71,62 +71,22 @@
 
 
 
-<p>In <a href="http://selfiecity.net">selfiecity</a> and a previous <a href = "http://lab.softwarestudies.com/2014/02/gender-age-and-ambiguity-of-selfies-on.html">post</a>, we showed that Moscow has a dramatic number of female selfies. To be more precise, you are 4 times less likely to find a male selfie from Moscow than any of the other five cities that we looked at. In this post we are going to ask if this trend holds for different age groups.</p>
+<p>In <a href="http://selfiecity.net">selfiecity</a> and a previous <a href = "http://lab.softwarestudies.com/2014/02/gender-age-and-ambiguity-of-selfies-on.html">post</a>, we showed that Moscow has a dramatic number of female selfies. To be more precise, the odds of finding a female selfie is 4.5 times greater in Moscow than the other five cities that we considered. In this post we are going to ask if this trend holds for different age groups.</p>
 
 <p>First, let's look again at the distribution of selifes partition by gender for the different cities:</p>
 
 <div class="chunk" id="unnamed-chunk-2"><div class="rimage default"><img src="figure/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" class="plot" /></div></div>
 
 
-<p>The plot shows  the number of selfie photos by city, gender and age
-group. A few things stand our in the plot (do you see other
-interesting patterns). Right away, we can see more patterns which were
-hidden when we only compared number of selfies for cities and genders,
-without separating into age groups.</p>
+<p>This plot shows the <a href = "http://en.wikipedia.org/wiki/Odds">odds</a> (on a log scale) of a selfie being female from the different cities. We can see that Moscow has the highest log odds than any other city (note that the anti-log of 1.5 is roughly 4.5 which is what we stated earlier). We also observe that all the log odds are positive numbers. This indicates that most selfies are indeed female (if the log odds is negative, then the odds in favor of finding male selfies) regardless of the city. </p>
 
-<p>In the upper part, we plot numbers of female and male selfies for
-youngest Instagram users (< 17). We see a strong differences between
-our cities located in Asia (Bangkok and Tokyo) and outside (New York,
-Moscow, Berlin). in the first two cities, there are many more selfies
-of young females, while in Western cities the numbers of male and
-females are almost the same. And the numbers of female selfies in
-Bangkok and Tokyo are also disproportionally large in comparison to
-all other groups in this age category.</p>
-
-<p>What happens when we consider the next age group - 17 to 24? Tokyo and
-Bangkok retain their strong positions, with significantly more female
-selfies in these two cities than the cities in the west. But now,
-Moscow shoots out way ahead - there are XX % female selfies from
-Moscow in this age group vs. XX % from Tokyo and XX % from Bangkok.
-And now the unusual pattern which we included in our findings
-presented in selfiecity.net is even more visible - there are XX as
-many female selfies in Moscow than male selfies. Thats a huge
-difference!</p>
-
-<p>In the next age group (24-32), Moscow is still leading, and it still
-has the largest difference in numbers betwen female and male selfies.
-The other city which also has a significant difference in this respect
-is NYC, but its not as strong as in Moscow.</p>
-
-<p>Finally, lets look at the last group (32-65). Here we see that the
-pattern which was present in all other age groups - more female
-selfies than male selfies for every city - is reversed. In our oldest
-group, in every city now there are more males than females. But Moscow
-is again an exeption - here we stlll find more female selfies than
-male selfies. Either Moscow males are too busy working to post
-selfies, or Moscow female just like to take their pictures at all ages
-- either way, its data again looks different than data from other
-cities.</p>
-<p>
-Now, you may remember from the results we reported in selfiecity that
-most selfies in our dataset are from 23-25 age category. Since in the
-graph above this category was broken into two, lets not break data
-differently, so we can have 23-25 olds in one group.</p>
-
+<p>Let's now how the log odds changes when we group the selfies by age:</p>
 
 
 <div class="chunk" id="unnamed-chunk-3"><div class="rimage default"><img src="figure/unnamed-chunk-3.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" class="plot" /></div></div>
 
+
+<p>We are essentially showing the same graph as before, but before we lumped all selfies from different ages into one group. Here, we are only looking at selfies that are between the indicated age groups. By isolating the different age groups, we see that the gender distributions are very different. This can be attributed to be an example of <a href = "http://en.wikipedia.org/wiki/Simpson's_paradox">Simpson's paradox</a>.</p> 
 
 </body>
 </html>
