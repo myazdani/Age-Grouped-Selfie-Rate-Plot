@@ -85,7 +85,7 @@ selfie.odds.group[which(selfie.odds.group$Odds > 0), "gender"] = "Female"
 selfie.odds.group[which(selfie.odds.group$Odds < 0), "gender"] = "Male"
 end.rcode-->
 
-<p>In <a href="http://selfiecity.net">selfiecity</a> and a previous <a href = "http://lab.softwarestudies.com/2014/02/gender-age-and-ambiguity-of-selfies-on.html">post</a>, we showed that Moscow has a dramatic number of female selfies. To be more precise, the odds of finding a female selfie is 4.5 times greater in Moscow than the other five cities that we considered. In this post we are going to ask if this trend holds for different age groups.</p>
+<p>In <a href="http://selfiecity.net">selfiecity</a> and a previous <a href = "http://lab.softwarestudies.com/2014/02/gender-age-and-ambiguity-of-selfies-on.html">post</a>, we showed that Moscow has a dramatic number of female selfies. To be more precise, the odds of finding a female selfie in Moscow is 9 to 2. In this post we are going to ask if this trend holds for different age groups.</p>
 
 <p>First, let's look again at the distribution of selfies partition by gender for the different cities:</p>
 
@@ -115,7 +115,7 @@ ggplot(selfie.odds, aes(x = Odds, y = city)) +
   xlab("Log Odds") 
 end.rcode-->
 
-<p>This plot shows the <a href = "http://en.wikipedia.org/wiki/Odds">odds</a> (on a log scale) of a selfie being female from the different cities. We can see that Moscow has the highest log odds than any other city (note that the anti-log of 1.5 is roughly 4.5 which is what we stated earlier). We also observe that all the log odds are positive numbers. This indicates that most selfies are indeed female (if the log odds is negative, then the odds in favor of finding male selfies) regardless of the city. </p>
+<p>This plot shows the <a href = "http://en.wikipedia.org/wiki/Odds">odds</a> (on a log scale) of a selfie being female from the different cities. We can see that Moscow has the highest log odds than any other city (note that the anti-log of 1.5 is roughly 4.5, which corresponds to the 9 to 2 odds we stated earlier). We also observe that all the log odds are positive numbers. This indicates that most selfies are indeed female (if the log odds is negative, then the odds in favor of finding male selfies) regardless of the city. Also note that if the log odds is close to zero, then the proportion of male and female selfies are the same.</p>
 
 <p>Let's now how the log odds changes when we group the selfies by age:</p>
 
@@ -140,8 +140,10 @@ ggplot(selfie.odds.group, aes(x = Odds, y = city)) +
   xlab("Log Odds") 
 end.rcode-->
 
-<p>We are essentially showing the same graph as before, but in the plot above we lumped all selfies from different ages into one group. Here, we are only looking at selfies that are between the indicated age groups. By isolating the different age groups, we see that the gender distributions are very different. This can be attributed to be an example of <a href = "http://en.wikipedia.org/wiki/Simpson's_paradox">Simpson's paradox</a>: when we group all the age groups together, the individual trends of the age groups get "washed out" or disappeared. </p> 
+<p>We are essentially showing the same graph as before, but in the plot above we lumped all selfies from different age groups into one single group. Here, however, we are only showing selfies that are in the particular age groups. By isolating different age groups, we see that the gender distributions are very different. This can be attributed to be an example of <a href = "http://en.wikipedia.org/wiki/Simpson's_paradox">Simpson's paradox</a>. This paradox is when different trends in different groups get "washed out" when the different groups are combined. In our case, we see that when we group all the age groups together, the individual trends of the age groups disappear.</p> 
 
-<p>For example, we notice that for the age group of 17 and under, Moscow does not dominate the log-odds of having female selfies (Bangkok does). But the most striking trend that we see is that as the age group increases, the odds of a selfie being female peaks in the early twenties and starts to decline in late twentysomethings (and beyond). We see that for all cities (except Moscow again!), the odds of selfies are in favor of males. </p>
+<p>For example, we notice that for the age group of 17 and under, Moscow <i>does not</i> dominate the log-odds of having female selfies as in the previous plot (Bangkok does). But the most striking trend that we see is that as the age group increases, the odds of a selfie being female peaks in the early twenties and starts to decline in late twenty-somethings (and beyond). We see that for all cities (except Moscow again!), the odds of selfies are in favor of males. By grouping the selfies in this way, we also observer that Bangkok is the city where the youngest males start to dominate the selfie marketplace. </p>
+
+<p>Finally, with the exception of the pre-college teens and pre-teens, selfies from Moscow are heavily dominated by females. This was the same result as we had before, but by focusing on specific age groups, we are able to observe more specific trends and see how the age demographics of selfies change for different cities and age groups.</p>
 </body>
 </html>
