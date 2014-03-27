@@ -80,6 +80,7 @@ selfie.odds = as.data.frame.table(selfie.odds, responseName="Odds")
 colnames(selfie.odds)[1] = "city"
 
 selfie.odds$gender = "Female"
+levels(selfie.odds.group$age_group) = c("Under 18", "18 - 21", "22-25", "26-29", "Over 30")
 
 selfie.odds.group[which(selfie.odds.group$Odds > 0), "gender"] = "Female"
 selfie.odds.group[which(selfie.odds.group$Odds < 0), "gender"] = "Male"
