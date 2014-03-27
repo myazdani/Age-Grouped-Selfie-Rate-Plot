@@ -122,7 +122,13 @@ end.rcode-->
 
 
 <!--begin.rcode fig.width=12, fig.height=16, echo= FALSE
-ggplot(selfie.odds.group, aes(x = Odds, y = city)) + 
+
+library(grid)
+height <- 2 # Vertical spacing
+aux <- 1e-5 # Auxiliary number to identify 'height' among other heights
+width <- 0.1 # Desirable horizontal spacing
+
+p = ggplot(selfie.odds.group, aes(x = Odds, y = city)) + 
   geom_segment(aes(yend=city), xend = 0, colour = "grey50") + 
   geom_point(size = rel(size_of_point_markers), aes(colour = gender)) +   
   theme_bw() + 
@@ -139,6 +145,13 @@ ggplot(selfie.odds.group, aes(x = Odds, y = city)) +
   #facet_grid(age_group ~ ., scales = "free_y", space = "free_y", ncol = 2) +
   facet_wrap(~age_group, ncol = 2, scales = "free_y") + 
   xlab("Log Odds") 
+
+p <- p + theme(panel.margin = unit(height + aux, "lines"))
+
+gtable <- ggplot_gtable(ggplot_build(p))
+#gtable$widths[sapply(gtable$widths, '[[', 1) == height + aux][[1]][[1]] <- width
+grid.draw(gtable)
+
 end.rcode-->
 
 <p>We are essentially showing the same graph as before, but in the plot above we lumped all selfies from different age groups into one single group. Here, however, we are only showing selfies that are in the particular age groups. By isolating different age groups, we see that the gender distributions are very different. This can be attributed to be an example of <a href = "http://en.wikipedia.org/wiki/Simpson's_paradox">Simpson's paradox</a>. This paradox is when different trends in different groups get "washed out" when the different groups are combined. In our case, we see that when we group all the age groups together, the individual trends of the age groups disappear.</p> 
