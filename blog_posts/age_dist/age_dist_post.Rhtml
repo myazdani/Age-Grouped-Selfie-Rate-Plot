@@ -139,7 +139,7 @@ has the largest difference in numbers betwen female and male selfies.
 The other city which also has a significant difference in this respect
 is NYC, but its not as strong as in Moscow.</p>
 
-Finally, lets look at the last group (32-65). Here we see that the
+<p>Finally, lets look at the last group (32-65). Here we see that the
 pattern which was present in all other age groups - more female
 selfies than male selfies for every city - is reversed. In our oldest
 group, in every city now there are more males than females. But Moscow
@@ -147,21 +147,12 @@ is again an exeption - here we stlll find more female selfies than
 male selfies. Either Moscow males are too busy working to post
 selfies, or Moscow female just like to take their pictures at all ages
 - either way, its data again looks different than data from other
-cities.
-
+cities.</p>
+<p>
 Now, you may remember from the results we reported in selfiecity that
 most selfies in our dataset are from 23-25 age category. Since in the
 graph above this category was broken into two, lets not break data
-differently, so we can have 23-25 olds in one group.
-
-[plot]
-
-
-
-
-
-<p>You can also embed plots, for example:</p>
-
+differently, so we can have 23-25 olds in one group.</p>
 
 
 
@@ -175,7 +166,8 @@ ggplot(selfie.odds.group, aes(x = Odds, y = city)) +
         axis.text.y = element_text(size = rel(size_of_city_names)),
         legend.text = element_text(size = rel(size_of_legend_text)),
         legend.key = element_blank(),
-        legend.title = element_blank()) +
+        legend.title = element_blank(),
+        legend.position = c(.8, .2), legend.justification = c(1,1)) +
   ylab("") +
   #facet_grid(age_group ~ ., scales = "free_y", space = "free_y", ncol = 2) +
   facet_wrap(~age_group, ncol = 2, scales = "free_y") + 
