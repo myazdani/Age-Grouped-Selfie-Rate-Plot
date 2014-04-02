@@ -1,0 +1,116 @@
+<html>
+
+<head>
+<title>Size of Facebox</title>
+</head>
+
+<body>
+
+<p>Taking selfies is highly limiting: ultimately the camera reaches as far as your arm stretches and you have not much choice in where to put your face! Given this limitation, are there any styles or themes behind selfies? In <a href = "http://selfiecity.net/#findings">selfiecity</a> we looked at how head tilts compare between different cities and observed that women from Sao Paulo, for example, have the most extreme angles. In this post we are going to look at how the size of the face varies between different cities.</p>
+
+<p>We suspect that the size of the face on a selfie depends on two factors: the distance of the camera from the face and the actual physical dimensions of the subject's face. From our data, measuring both of these factors directly is difficult, if not impossible. Therefore we will restrict ourselves with just the size of the face in the image. Today, most facial recognition software finds a face and a "facebox" that covers the face. Here is an example of <a href = "http://opencv.org/">OpenCV</a> drawing an box outline in the standard image processing photograph of <a href = "http://en.wikipedia.org/wiki/Lenna">Lenna</a>:</p>
+<center>
+<img src="facedetection1.png" alt="Smiley face" height=300 width=300>
+</center>
+
+<!--begin.rcode, echo=FALSE, cache = TRUE
+library(nnet)
+setwd("~/Documents/selfies/selfie/scripts/")
+
+selfies.rek = read.csv("../meta/selfies_rekognized_full.csv", header = TRUE, stringsAsFactors = FALSE)
+selfies.rek$combined_gender_guess = as.factor(selfies.rek$combined_gender_guess)
+levels(selfies.rek$combined_gender_guess) = c("Female", "Male")
+selfies.rek$city = as.factor(selfies.rek$city)
+#gender.logit = glm(combined_gender_guess ~ log(1+abs(tan(pose_yaw))) + log(1+abs(tan(pose_roll))) + log(1+abs(tan(pose_pitch))) + 
+#                     log(sqrt(boundingbox_tl_y**2 + boundingbox_tl_x**2)) + 
+#                     atan2(boundingbox_tl_y,boundingbox_tl_x) + log(1+boundingbox_size_height), data = selfies.rek, family = "binomial")
+
+#ml$prog2 <- relevel(ml$prog, ref = "academic")
+#city.softmax <- multinom(prog2 ~ ses + write, data = selfies.rek)
+cities.to.compare = levels(selfies.rek$city)
+
+library(nnet)
+require(reshape)
+city.softmax = multinom(city ~ log(boundingbox_size_height), data = selfies.rek, trace = FALSE)
+dses = data.frame(boundingbox_size_height = mean(log(1+selfies.rek$boundingbox_size_height)))
+dbox = data.frame(boundingbox_size_height = rep(log(1+c(23:137)), 2))
+pp.box = cbind(dbox, predict(city.softmax, newdata = dbox, type = "probs", se = TRUE))
+lpp = melt(pp.box, id.vars = "boundingbox_size_height")
+end.rcode-->
+
+<p>This detected facebox gives us a rough approximation for the size of the face and we will use the area of this box for our face dimension measurements. The facial recognition software that we use is the <a href = "https://rekognition.com">ReKognition API</a> (further details on our methods can be found <a href = "http://selfiecity.net">here</a> and <a href = "http://selfiecity.net/assets/data-collection-large.png">here</a>). In previous posts we looked at age and gender distributions and showed how grouping by city reveals patterns that we otherwise do not observe (a case of <a href = "http://en.wikipedia.org/wiki/Simpson's_paradox">Simpson's paradox</a>). Here we will take a similar approach and start by first plotting the probability density distribution of facebox sizes for all the selfies in our data set. We suspect that if there </p>
+
+<p>Earlier we mentioned that the we hypothesize that the two dominant factors contributing to the size of the face would be the distance of the camera from the face and the actual physical dimensions of the subject's face. Both the distance of the camera (dependent on the subject's arm) and the physical dimensions of the subject's face, depends on the build or size of the subject. It is <a href = "http://en.wikipedia.org/wiki/Log-normal_distribution#Occurrence">well known</a> that human heights and weights have (log) <a href = "http://en.wikipedia.org/wiki/Normal_distribution">normal distributions</a> for males and females separately. We suspect that we should also observe a normal distribution when we look at the distribution of facebox sizes (after gender separation) 
+</p>
+
+<!--begin.rcode fig.width=7, fig.height=6, echo=FALSE
+library(ggplot2)
+size_of_point_markers = 2
+size_of_city_names = 2 
+size_of_percentage_labels = 2
+size_of_percentage_digits = 1.5
+size_of_legend_text = 1.5
+ggplot(selfies.rek, aes(x = log(boundingbox_size_height), fill = combined_gender_guess, colour = combined_gender_guess)) + 
+  geom_density(alpha = .3) + 
+  theme_bw() + 
+    theme(panel.grid.major.y = element_blank(), 
+        axis.text.x = element_blank(), 
+        axis.title.x = element_text(size = rel(size_of_percentage_digits)),
+        axis.text.y =  element_blank(),
+        axis.title.y = element_text(size = rel(size_of_percentage_digits)),
+        legend.text = element_text(size = rel(size_of_legend_text)),
+        legend.key = element_blank(),
+        panel.border = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.title = element_blank()) +
+  xlab("Facebox Size") +
+  ylab("Probability Density")
+end.rcode-->
+
+<p>However, the figure above shows that we have what resembles a bimodal distribution as opposed to the classic unimodal normal. We also observe that both the distribution of facebox sizes for females and males are about the same. In other words, the facebox size is not gender specific. But as we showed before, grouping the data in various ways will reveal patterns that otherwise are not clearly seen. Since grouping by gender does not reveal unique patterns, we will look at what grouping by cities reveals. </p>
+
+<!--begin.rcode fig.width=7, fig.height=6, echo=FALSE
+levels(lpp$variable) = c("Bangkk", "Berlin", "Moscow", "New York", "Sao Paulo")
+
+ggplot(lpp, aes(x = exp(boundingbox_size_height), y = value, colour = variable)) + 
+  geom_line(size = rel(size_of_point_markers), aes(colour = variable)) +
+  theme_bw() +
+  theme(panel.grid.major.y = element_blank(), 
+        axis.text.x = element_text(size = rel(size_of_percentage_labels)), 
+        axis.title.x = element_text(size = rel(size_of_percentage_digits)),
+        axis.text.y = element_text(size = rel(size_of_city_names)),
+        axis.title.y = element_text(size = rel(size_of_percentage_digits)),
+        legend.text = element_text(size = rel(size_of_legend_text)),
+        legend.key = element_blank(),
+        legend.title = element_blank()) +
+  xlab("Boundingbox size height") +
+  ylab("Probability")
+end.rcode-->
+
+<p>The above figure shows how the probability of a selfie from a city changes with the facebox size. We can see that Bangkok and Moscow are outliers and we will therefore look at their facebox distributions more closely. Note also that the probability of a selfie changes as the size of the facebox changes. This tells us that selfies from Moscow have the most information for small facebox sizes. The following figure shows the facebox distribution for Bangkok and Moscow (note that the color in the legend here is for cities, not genders like before):</p>
+
+<!--begin.rcode fig.width=7, fig.height=6, echo=FALSE
+selfies.c = subset(selfies.rek, city == "bangkok" | city == "moscow")
+ggplot(selfies.c, aes(x = log(boundingbox_size_height), fill = city, colour = city)) + 
+  geom_density(alpha = .3) + 
+  theme_bw() + 
+    theme(panel.grid.major.y = element_blank(), 
+        axis.text.x = element_text(size = rel(size_of_percentage_labels)), 
+        axis.title.x = element_text(size = rel(size_of_percentage_digits)),
+        axis.text.y =  element_blank(),
+        axis.title.y = element_text(size = rel(size_of_percentage_digits)),
+        legend.text = element_text(size = rel(size_of_legend_text)),
+        legend.key = element_blank(),
+        legend.title = element_blank()) +
+  xlab("Boundingbox size height") +
+  ylab("Probability Density")
+end.rcode-->
+
+<p>Now we see that the bimodal nature of the distribution is most clearly pronounced for Moscow. What could be the attribute for this bimodality? Earlier we suspected that two factors play a role in the facebox size: camera distance and face dimensions. However, there is also a third factor: aesthetic. We propose that hump we have from the smaller faceboxes  is when subjects are not concerned with <i>just</i> capturing their face, but also <i>something else</i>. </p>
+
+<p>Browsing through the <a href = "http://selfiecity.net/selfiexploratory/">selfiexploratory</a> reveals that this something else is often a subject's body. Again, browsing through the selfiexploratory, we see that the smaller sized faceboxes are social situations where the person is ready "to go out" (and are much more serious) whereas selfies with larger sized faceboxes reveal expressions of playfulness and sometimes even boredom. The hump from the smaller facebox selfies show us that the "going out"  social situation is especially popular in Moscow.</p>
+
+</body>
+</html>
